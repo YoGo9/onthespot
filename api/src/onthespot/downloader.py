@@ -280,7 +280,7 @@ class DownloadWorker:
                     requeue_item(item)
                     continue
                 except Exception as exc:
-                    logger.error("Download failed", extra={"item": item, "error": str(exc)})
+                    logger.exception("Download failed for %s (%s)", item_id, service)
                     item.error = f"RuntimeError during download of: {item_id}, see logs."
                     item.item_status = ItemStatus.FAILED
                     progress_hook(item, 0, item.item_status)
@@ -534,7 +534,7 @@ class DownloadWorker:
         """
         if service == "spotify":
             default_format, bitrate = download_spotify(
-                item.model_dump(),
+                item,
                 item_id,
                 item_type,
                 token,
